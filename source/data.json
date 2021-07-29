@@ -1,0 +1,22 @@
+[
+    {
+        "year":2019,
+        "travel":100,
+        "educate":1000,
+        "game":333,
+        "medical":444,
+        "ecommerce":555,
+        "social":666,
+        "finance":777
+    },
+    {
+        "year":2020,
+        "travel":111,
+        "educate":555,
+        "game":555,
+        "medical":456,
+        "ecommerce":333,
+        "social":199,
+        "finance":222
+    }
+]
