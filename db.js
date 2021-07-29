@@ -6,9 +6,8 @@ const config = {
     port:'3306',
     user:'root',
     password:'1234',
-    database:'bigscreen',
+    database: 'bigscreen',
 }
-
 // [], {}, [{}, id]
 exports.db = (sql, sqlParams) => {
     sqlParams = sqlParams == null ? [] : sqlParams
@@ -18,7 +17,7 @@ exports.db = (sql, sqlParams) => {
             if (!err) {
                 conn.query(sql, sqlParams, (e, results) => {
                     if (!e) {
-                        console.log(results)
+                        //console.log('结果：',results)
                         resolve(results)
                         conn.destroy()
                     } else {

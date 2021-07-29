@@ -11,20 +11,33 @@ app.use(express.static(__dirname + '/'));
 
 //统一封装返回
 
+//sql命令
+const sql = 'SELECT * FROM bar1';
+
+//有异步的问题
+var str;
+db(sql,null).then(v=>{  
+    str = v; 
+    console.log(str);
+})
+
+
 //发送get请求
 app.get('/', (req, resp) => {
     read('./index.html')
         .then(res => {
             resp.write(res)
-            //resp.end('页面打开');
-        })
+            //resp.json(db(sql,null));
+        });
 })
 
+app.get('/big', (req, resp) => {
 
+})
 
 //监听服务器端口
 const hostName = '192.168.137.1'; //ip
 const port = 8000; //端口
 app.listen(port, hostName, function() {
-    console.log(`服务器运行在http://${hostName}:${port}`);
+    console.log(`服务器运行在http://${hostName}:${port}/`);
 });
