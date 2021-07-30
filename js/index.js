@@ -15,7 +15,8 @@ var mDataIndex = 0;//0是2019 ，1是2020
 
   window.setInterval(()=>{
     $.ajax({
-      url: "../source/data.json",
+      url: "/bar1",
+      type: "get",
       dataType: 'json',
       success: function(data){
         dataJson = data;
@@ -25,14 +26,14 @@ var mDataIndex = 0;//0是2019 ，1是2020
         ];
         option.series[0].data = dataNum[mDataIndex].data;
         myChart.setOption(option);
-        console.log("柱状图数据更新");
+        //console.log("柱状图数据更新");
       },
       timeout: 2000,
       error: function(e){
           console.log(e);
       },
     });
-  },3000)
+  },300)
   
 
   // 指定配置和数据
@@ -107,7 +108,7 @@ var mDataIndex = 0;//0是2019 ，1是2020
         type: "bar",
         barWidth: "35%",
         //根据参数设定初始数值
-        data: [200,200,200,200,200,200,200],
+        data: [2000,2000,2000,2000,2000,2000,2000],
         itemStyle: {
           barBorderRadius: 5
         }
@@ -133,41 +134,47 @@ var mDataIndex = 0;//0是2019 ，1是2020
 (function() {
   console.log("折线图初始化");
   // 基于准备好的dom，初始化echarts实例
-  var myChart = echarts.init(document.querySelector(".line .chart"));
+  const myChart = echarts.init(document.querySelector(".line .chart"));
 
   // (1)准备数据
-  var dataJson = [];
-  var data = {
+  let mIndex = 0;
+  let data = {
     year: [
       [24, 40, 101, 134, 90, 230, 210, 230, 120, 230, 210, 120],
       [40, 64, 191, 324, 290, 330, 310, 213, 180, 200, 180, 79]
     ]
   };
 
-  //动态获取数据
   window.setInterval(()=>{
     $.ajax({
-      url: "../source/data.json",
+      url: "/line1",
+      type: "get",
       dataType: 'json',
-      success: function(data){
-        dataJson = data;
+      success: function(datares){
+        if(mIndex <= 3 ){
+          data.year[0] = Object.values(datares[mIndex]);
+          if(mIndex === 3){
+            data.year[1] = Object.values(datares[0]);
+            mIndex = 0;
+          }else{
+            data.year[1] = Object.values(datares[mIndex+1]);
+            mIndex++;
+          }
+        }
 
-
-        //数据获取完成后动态更新
-        // option.series[0].data = dataNum[mDataIndex].data;
-        // myChart.setOption(option);
-        console.log("折线图数据更新");
+        option.series[0].data = data.year[0];
+        option.series[1].data = data.year[1];
+        myChart.setOption(option);
       },
       timeout: 2000,
       error: function(e){
-          console.log(e);
+        console.log(e);
       },
     });
-  },3000)
-
+  },2000)
 
   // 2. 指定配置和数据
-  var option = {
+  const option = {
     color: ["#00f2f1", "#ed3f35"],
     tooltip: {
       // 通过坐标轴来触发
@@ -258,28 +265,46 @@ var mDataIndex = 0;//0是2019 ，1是2020
       }
     ]
   };
-  // 3. 把配置和数据给实例对象
-  myChart.setOption(option);
 
-  // 重新把配置好的新数据给实例对象
+  // 3. 把配置和数据给实例对象
   myChart.setOption(option);
   window.addEventListener("resize", function() {
     myChart.resize();
   });
 })();
 
-
 // 饼形图定制
-// 折线图定制
 (function() {
   // 基于准备好的dom，初始化echarts实例
-  var myChart = echarts.init(document.querySelector(".pie .chart"));
+  const myChart = echarts.init(document.querySelector(".pie .chart"));
+  let mIndex = 0;
 
-  option = {
+  window.setInterval(()=>{
+    $.ajax({
+      url: "/pie1",
+      type: "get",
+      dataType: 'json',
+      success: function(datares){
+        if(mIndex === 3) mIndex = 0;
+        let data = Object.values(datares[mIndex]);
+        for (let i=0; i<5 ; i++){
+          option.series[0].data[i].value = data[i];
+        }
+        mIndex++;
+        myChart.setOption(option);
+      },
+      timeout: 2000,
+      error: function(e){
+        console.log(e);
+      },
+    });
+  },2000)
+
+  let option = {
     tooltip: {
       trigger: "item",
       formatter: "{a} <br/>{b}: {c} ({d}%)",
-      position: function(p) {
+      position: function (p) {
         //其中p为当前鼠标的位置
         return [p[0] + 10, p[1] - 10];
       }
@@ -301,45 +326,67 @@ var mDataIndex = 0;//0是2019 ，1是2020
         center: ["50%", "42%"],
         radius: ["40%", "60%"],
         color: [
-          "#065aab",
-          "#066eab",
-          "#0682ab",
-          "#0696ab",
-          "#06a0ab",
-          "#06b4ab",
-          "#06c8ab",
-          "#06dcab",
+          "#0c6ab6",
+          "#631d8c",
+          "#bb1551",
+          "#20b262",
+          "#a1874d",
+          "#1ebeb5",
+          "#83cb8c",
+          "#571414",
           "#06f0ab"
         ],
-        label: { show: false },
-        labelLine: { show: false },
+        label: {show: false},
+        labelLine: {show: false},
         data: [
-          { value: 1, name: "0岁以下" },
-          { value: 4, name: "20-29岁" },
-          { value: 2, name: "30-39岁" },
-          { value: 2, name: "40-49岁" },
-          { value: 1, name: "50岁以上" }
+          {value: 1, name: "0岁以下"},
+          {value: 4, name: "20-29岁"},
+          {value: 2, name: "30-39岁"},
+          {value: 2, name: "40-49岁"},
+          {value: 1, name: "50岁以上"}
         ]
       }
     ]
   };
-
+  myChart.setOption(option);
   // 使用刚指定的配置项和数据显示图表。
   myChart.setOption(option);
   window.addEventListener("resize", function() {
     myChart.resize();
   });
 })();
+
 // 学习进度柱状图模块
 (function() {
   // 基于准备好的dom，初始化echarts实例
   var myChart = echarts.init(document.querySelector(".bar1 .chart"));
 
-  var data = [70, 34, 60, 78, 69];
-  var titlename = ["HTML5", "CSS3", "javascript", "VUE", "NODE"];
-  var valdata = [702, 350, 610, 793, 664];
-  var myColor = ["#1089E7", "#F57474", "#56D0E3", "#F8B448", "#8B78F6"];
-  option = {
+
+  const titleName = ["HTML5", "CSS3", "javascript", "VUE", "NODE"];
+  const myColor = ["#26cd2e", "#b42222", "#56D0E3", "#F8B448", "#8B78F6"];
+  let data = [50, 50, 50, 50, 50];
+  let valData = [703, 666, 845, 423, 222];
+  let mIndex = 0;
+
+  window.setInterval(()=>{
+    $.ajax({
+      url: "/bar2",
+      type: "get",
+      dataType: 'json',
+      success: function(datares){
+        if(mIndex === 5) mIndex = 0;
+        option.series[0].data = Object.values(datares[mIndex]);
+        mIndex++;
+        myChart.setOption(option);
+      },
+      timeout: 2000,
+      error: function(e){
+        console.log(e);
+      },
+    });
+  },800)
+
+  let option = {
     //图标位置
     grid: {
       top: "10%",
@@ -350,9 +397,14 @@ var mDataIndex = 0;//0是2019 ，1是2020
       show: false
     },
     yAxis: [
+        //关于双y轴，默认 grid 中的第一个 y 轴在 grid 的左侧（'left'），第二个 y 轴视第一个 y 轴的位置放在另一侧。
+        //第一个y轴
       {
         show: true,
-        data: titlename,
+        //显示名称
+        data: titleName,
+        //如果不写类型，默认根据数据↑进行类型分配
+        type: 'category',
         inverse: true,
         axisLine: {
           show: false
@@ -379,19 +431,30 @@ var mDataIndex = 0;//0是2019 ，1是2020
           }
         }
       },
+        //第二个y轴valDate
       {
         show: true,
         inverse: true,
-        data: valdata,
+        data: valData,
+        type: "category",
         axisLabel: {
           textStyle: {
             fontSize: 12,
             color: "#fff"
-          }
+          },
+        },
+        //轴线不显示
+        axisLine: {
+          show: false
+        },
+        //刻度线不显示
+        axisTick: {
+          show: false
         }
       }
     ],
     series: [
+        //data
       {
         name: "条",
         type: "bar",
@@ -403,7 +466,7 @@ var mDataIndex = 0;//0是2019 ，1是2020
           normal: {
             barBorderRadius: 20,
             color: function(params) {
-              var num = myColor.length;
+              const num = myColor.length;
               return myColor[params.dataIndex % num];
             }
           }
@@ -446,7 +509,34 @@ var mDataIndex = 0;//0是2019 ，1是2020
   // 基于准备好的dom，初始化echarts实例
   var myChart = echarts.init(document.querySelector(".line1 .chart"));
 
-  option = {
+  let mIndex = 0;
+
+  window.setInterval(()=>{
+    $.ajax({
+      url: "/line2",
+      type: "get",
+      dataType: 'json',
+      success: function(datares){
+        let data = Object.values(datares);
+        option.series[0].data = Object.values(datares[mIndex]);
+        if(mIndex === 2){
+          option.series[1].data = Object.values(datares[0]);
+          mIndex = 0;
+        }else{
+          option.series[1].data = Object.values(datares[mIndex+1]);
+          mIndex++;
+        }
+
+        myChart.setOption(option);
+      },
+      timeout: 2000,
+      error: function(e){
+        console.log(e);
+      },
+    });
+  },2000)
+
+  let option = {
     tooltip: {
       trigger: "axis",
       axisPointer: {
@@ -519,8 +609,8 @@ var mDataIndex = 0;//0是2019 ，1是2020
         ]
       },
       {
-        axisPointer: { show: false },
-        axisLine: { show: false },
+        axisPointer: {show: false},
+        axisLine: {show: false},
         position: "bottom",
         offset: 20
       }
@@ -529,7 +619,7 @@ var mDataIndex = 0;//0是2019 ，1是2020
     yAxis: [
       {
         type: "value",
-        axisTick: { show: false },
+        axisTick: {show: false},
         axisLine: {
           lineStyle: {
             color: "rgba(255,255,255,.1)"
@@ -566,21 +656,21 @@ var mDataIndex = 0;//0是2019 ，1是2020
         areaStyle: {
           normal: {
             color: new echarts.graphic.LinearGradient(
-              0,
-              0,
-              0,
-              1,
-              [
-                {
-                  offset: 0,
-                  color: "rgba(1, 132, 213, 0.4)"
-                },
-                {
-                  offset: 0.8,
-                  color: "rgba(1, 132, 213, 0.1)"
-                }
-              ],
-              false
+                0,
+                0,
+                0,
+                1,
+                [
+                  {
+                    offset: 0,
+                    color: "rgba(1, 132, 213, 0.4)"
+                  },
+                  {
+                    offset: 0.8,
+                    color: "rgba(1, 132, 213, 0.1)"
+                  }
+                ],
+                false
             ),
             shadowColor: "rgba(0, 0, 0, 0.1)"
           }
@@ -641,21 +731,21 @@ var mDataIndex = 0;//0是2019 ，1是2020
         areaStyle: {
           normal: {
             color: new echarts.graphic.LinearGradient(
-              0,
-              0,
-              0,
-              1,
-              [
-                {
-                  offset: 0,
-                  color: "rgba(0, 216, 135, 0.4)"
-                },
-                {
-                  offset: 0.8,
-                  color: "rgba(0, 216, 135, 0.1)"
-                }
-              ],
-              false
+                0,
+                0,
+                0,
+                1,
+                [
+                  {
+                    offset: 0,
+                    color: "rgba(0, 216, 135, 0.4)"
+                  },
+                  {
+                    offset: 0.8,
+                    color: "rgba(0, 216, 135, 0.1)"
+                  }
+                ],
+                false
             ),
             shadowColor: "rgba(0, 0, 0, 0.1)"
           }
